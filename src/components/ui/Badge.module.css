@@ -1,0 +1,83 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+  transition: all var(--transition-fast);
+  line-height: 1.4;
+}
+
+.badge.interactive {
+  cursor: pointer;
+}
+
+/* Variants */
+.default {
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+}
+
+.amber {
+  background: rgba(245, 158, 11, 0.12);
+  color: var(--color-amber-600);
+}
+
+.sage {
+  background: rgba(74, 124, 74, 0.1);
+  color: var(--color-sage-600);
+}
+
+.clay {
+  background: rgba(168, 90, 66, 0.1);
+  color: var(--color-clay-600);
+}
+
+.sky {
+  background: rgba(59, 130, 246, 0.1);
+  color: var(--color-sky-500);
+}
+
+/* Status variants */
+.draft {
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+}
+
+.published {
+  background: rgba(74, 124, 74, 0.1);
+  color: var(--color-sage-600);
+}
+
+.unpublished {
+  background: rgba(245, 158, 11, 0.12);
+  color: var(--color-amber-600);
+}
+
+/* Remove button for tags */
+.removeBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-radius: var(--radius-full);
+  color: inherit;
+  opacity: 0.6;
+  transition: opacity var(--transition-fast);
+  font-size: 12px;
+  line-height: 1;
+  padding: 0;
+}
+
+.removeBtn:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.1);
+}
