@@ -30,6 +30,27 @@ export const jobStatusEnum = pgEnum("job_status", [
   "failed",
 ]);
 
+export const markTypeEnum = pgEnum("mark_type", [
+  "resonated",
+  "recognized",
+  "reflected",
+]);
+
+export const echoNoteStatusEnum = pgEnum("echo_note_status", [
+  "pending",
+  "delivered",
+  "rejected",
+]);
+
+export const viewSourceEnum = pgEnum("view_source", [
+  "direct",
+  "archive",
+  "search",
+  "related",
+  "prompt",
+  "theme",
+]);
+
 // ===== Accounts =====
 
 export const accounts = pgTable("accounts", {
@@ -301,7 +322,119 @@ export const storyRelationshipsRelations = relations(
   })
 );
 
+// ===== Reader Marks (quiet signals of resonance) =====
+// Author-only visibility: these never surface on the public archive.
+
+export const readerMarks = pgTable(
+  "reader_marks",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    storyId: uuid("story_id")
+      .references(() => stories.id, { onDelete: "cascade" })
+      .notNull(),
+    readerAccountId: uuid("reader_account_id")
+      .references(() => accounts.id, { onDelete: "cascade" })
+      .notNull(),
+    markType: markTypeEnum("mark_type").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    index("reader_marks_story_id_idx").on(table.storyId),
+    index("reader_marks_reader_id_idx").on(table.readerAccountId),
+    uniqueIndex("reader_marks_unique").on(
+      table.storyId,
+      table.readerAccountId,
+      table.markType
+    ),
+  ]
+);
+
+export const readerMarksRelations = relations(readerMarks, ({ one }) => ({
+  story: one(stories, {
+    fields: [readerMarks.storyId],
+    references: [stories.id],
+  }),
+  reader: one(accounts, {
+    fields: [readerMarks.readerAccountId],
+    references: [accounts.id],
+  }),
+}));
+
+// ===== Echo Notes (private reader-to-author notes) =====
+
+export const echoNotes = pgTable(
+  "echo_notes",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    storyId: uuid("story_id")
+      .references(() => stories.id, { onDelete: "cascade" })
+      .notNull(),
+    readerAccountId: uuid("reader_account_id")
+      .references(() => accounts.id, { onDelete: "cascade" })
+      .notNull(),
+    noteText: text("note_text").notNull(),
+    status: echoNoteStatusEnum("status").default("pending").notNull(),
+    rejectionReason: varchar("rejection_reason", { length: 255 }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    deliveredAt: timestamp("delivered_at", { withTimezone: true }),
+    readAt: timestamp("read_at", { withTimezone: true }),
+  },
+  (table) => [
+    index("echo_notes_story_id_idx").on(table.storyId),
+    index("echo_notes_status_idx").on(table.status),
+  ]
+);
+
+export const echoNotesRelations = relations(echoNotes, ({ one }) => ({
+  story: one(stories, {
+    fields: [echoNotes.storyId],
+    references: [stories.id],
+  }),
+  reader: one(accounts, {
+    fields: [echoNotes.readerAccountId],
+    references: [accounts.id],
+  }),
+}));
+
+// ===== Story Views (quiet circulation stats) =====
+// Aggregated privately for the author. The viewerAccountId is used only to
+// filter out the author's own views and to dedupe within a short window; it is
+// never shown through the dashboard.
+
+export const storyViews = pgTable(
+  "story_views",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    storyId: uuid("story_id")
+      .references(() => stories.id, { onDelete: "cascade" })
+      .notNull(),
+    viewerAccountId: uuid("viewer_account_id").references(() => accounts.id, {
+      onDelete: "set null",
+    }),
+    source: viewSourceEnum("source").default("direct").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    index("story_views_story_id_idx").on(table.storyId),
+    index("story_views_created_at_idx").on(table.createdAt),
+  ]
+);
+
+export const storyViewsRelations = relations(storyViews, ({ one }) => ({
+  story: one(stories, {
+    fields: [storyViews.storyId],
+    references: [stories.id],
+  }),
+}));
+
 // ===== Background Jobs =====
+
 
 export const jobs = pgTable(
   "jobs",

@@ -72,7 +72,7 @@ export default function SearchPage() {
               {results.map((result) => (
                 <Link
                   key={result.id}
-                  href={`/archive/${result.id}`}
+                  href={`/archive/${result.id}?from=search`}
                   className={styles.resultCard}
                 >
                   <h3 className={styles.storyTitle}>{result.title}</h3>

@@ -1,25 +1,47 @@
 import Link from "next/link";
 import { getArchiveStory, getRelatedStories, getReflectionsForArchiveStory } from "@/actions/archive";
+import { recordStoryView, getReaderMarks, isStoryAuthor, type ViewSource } from "@/actions/resonance";
 import { Badge } from "@/components/ui";
+import { StoryResonanceControls } from "@/components/stories/StoryResonanceControls";
 import { notFound } from "next/navigation";
 import styles from "../archive.module.css";
 
+const VALID_SOURCES: ViewSource[] = [
+  "direct",
+  "archive",
+  "search",
+  "related",
+  "prompt",
+  "theme",
+];
+
 export default async function ArchiveStoryPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ from?: string }>;
 }) {
   const { id } = await params;
+  const { from } = await searchParams;
   const story = await getArchiveStory(id);
 
   if (!story) {
     notFound();
   }
 
-  const [relatedStories, reflections] = await Promise.all([
+  const source = (VALID_SOURCES as string[]).includes(from ?? "")
+    ? (from as ViewSource)
+    : "direct";
+
+  const [relatedStories, reflections, readerMarks, viewerIsAuthor] = await Promise.all([
     getRelatedStories(id),
     getReflectionsForArchiveStory(id),
+    getReaderMarks(id),
+    isStoryAuthor(id),
   ]);
+
+  await recordStoryView(id, source);
 
   return (
     <div className={styles.storyPage}>
@@ -74,6 +96,12 @@ export default async function ArchiveStoryPage({
         </div>
       )}
 
+      <StoryResonanceControls
+        storyId={story.id}
+        initialMarks={readerMarks}
+        isAuthor={viewerIsAuthor}
+      />
+
       {relatedStories.length > 0 && (
         <div className={styles.relatedSection}>
           <h3 className={styles.relatedTitle}>Related Stories</h3>
@@ -81,7 +109,7 @@ export default async function ArchiveStoryPage({
             {relatedStories.map((related) => (
               <Link
                 key={related.id}
-                href={`/archive/${related.id}`}
+                href={`/archive/${related.id}?from=related`}
                 className={styles.storyCard}
               >
                 <h4 className={styles.storyTitle}>{related.title}</h4>

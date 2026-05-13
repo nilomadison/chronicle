@@ -43,7 +43,7 @@ export default async function ArchivePage() {
           {archiveStories.map((story) => (
             <Link
               key={story.id}
-              href={`/archive/${story.id}`}
+              href={`/archive/${story.id}?from=archive`}
               className={styles.storyCard}
             >
               <h3 className={styles.storyTitle}>{story.title}</h3>

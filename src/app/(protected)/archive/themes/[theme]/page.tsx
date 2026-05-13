@@ -29,7 +29,7 @@ export default async function ThemeStoriesPage({
           {stories.map((story) => (
             <Link
               key={story.id}
-              href={`/archive/${story.id}`}
+              href={`/archive/${story.id}?from=theme`}
               className={styles.storyCard}
             >
               <h3 className={styles.storyTitle}>{story.title}</h3>

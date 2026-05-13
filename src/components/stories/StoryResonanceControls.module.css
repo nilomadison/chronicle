@@ -1,0 +1,123 @@
+.resonance {
+  padding-top: var(--space-8);
+  border-top: 1px solid var(--border-secondary);
+  margin-bottom: var(--space-10);
+}
+
+.heading {
+  font-size: var(--text-sm);
+  color: var(--text-tertiary);
+  margin-bottom: var(--space-4);
+  font-style: italic;
+}
+
+.markRow {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-6);
+}
+
+.markButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--text-sm);
+  font-family: var(--font-body);
+  color: var(--text-secondary);
+  background: transparent;
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-full, 999px);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.markButton:hover {
+  border-color: var(--border-primary);
+  color: var(--text-primary);
+}
+
+.markButtonActive {
+  border-color: var(--accent-secondary);
+  color: var(--accent-secondary);
+  background: rgba(90, 125, 108, 0.08);
+}
+
+.markCheck {
+  font-size: var(--text-xs);
+  opacity: 0.8;
+}
+
+.echoToggle {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: var(--text-sm);
+  font-family: var(--font-body);
+  color: var(--text-tertiary);
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: var(--border-secondary);
+  text-underline-offset: 3px;
+}
+
+.echoToggle:hover {
+  color: var(--text-primary);
+}
+
+.echoForm {
+  margin-top: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.echoTextarea {
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-sm);
+  font-family: var(--font-body);
+  color: var(--text-primary);
+  background: var(--bg-card);
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-md, 8px);
+  outline: none;
+  resize: vertical;
+  min-height: 5rem;
+  line-height: var(--leading-relaxed);
+}
+
+.echoTextarea:focus {
+  border-color: var(--accent-secondary);
+}
+
+.echoHint {
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+  line-height: var(--leading-relaxed);
+}
+
+.echoActions {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.echoError {
+  font-size: var(--text-xs);
+  color: var(--text-danger, #b54343);
+}
+
+.echoSuccess {
+  font-size: var(--text-sm);
+  color: var(--accent-secondary);
+  padding: var(--space-3) 0;
+  font-style: italic;
+}
+
+.signInNote {
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+  font-style: italic;
+}

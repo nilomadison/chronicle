@@ -42,7 +42,7 @@ export default async function PromptStoriesPage({
           {stories.map((story) => (
             <Link
               key={story.id}
-              href={`/archive/${story.id}`}
+              href={`/archive/${story.id}?from=prompt`}
               className={styles.storyCard}
             >
               <h3 className={styles.storyTitle}>{story.title}</h3>
